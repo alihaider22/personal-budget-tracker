@@ -8,7 +8,7 @@ import { generateId } from "@/utils";
 interface TransactionFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (transaction: Transaction) => void;
+  onSave: (transaction: Omit<Transaction, 'id'>) => void;
   categories: Category[];
 }
 
@@ -38,8 +38,7 @@ export default function TransactionForm({
       return;
     }
 
-    const newTransaction: Transaction = {
-      id: generateId(),
+    const newTransaction: Omit<Transaction, 'id'> = {
       description: formData.description,
       amount: parseFloat(formData.amount),
       type: formData.type,
