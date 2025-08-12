@@ -1,11 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, Filter, Download } from "lucide-react";
 import { Transaction, Category } from "@/types";
 import { formatCurrency, formatDate } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
-import { getTransactions, getCategories, deleteTransaction } from "@/lib/firebaseServices";
+import {
+  getTransactions,
+  getCategories,
+  deleteTransaction,
+} from "@/lib/firebaseServices";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function TransactionsPage() {
@@ -18,6 +22,28 @@ export default function TransactionsPage() {
   );
   const [filterCategory, setFilterCategory] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showExportDropdown, setShowExportDropdown] = useState(false);
+  const [deletingTransactionId, setDeletingTransactionId] = useState<
+    string | null
+  >(null);
+  const exportDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Handle clicking outside export dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        exportDropdownRef.current &&
+        !exportDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowExportDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Load data from Firebase when user is authenticated
   useEffect(() => {
@@ -55,15 +81,85 @@ export default function TransactionsPage() {
   });
 
   const handleDeleteTransaction = async (id: string) => {
-    if (confirm("Are you sure you want to delete this transaction?")) {
+    const transaction = transactions.find((t) => t.id === id);
+    if (!transaction) return;
+
+    const confirmMessage = `Are you sure you want to delete "${
+      transaction.description
+    }" (${formatCurrency(transaction.amount)})?`;
+
+    if (confirm(confirmMessage)) {
       try {
+        setDeletingTransactionId(id);
         await deleteTransaction(id);
-        setTransactions(prev => prev.filter(t => t.id !== id));
+        setTransactions((prev) => prev.filter((t) => t.id !== id));
       } catch (error) {
         console.error("Error deleting transaction:", error);
         alert("Failed to delete transaction");
+      } finally {
+        setDeletingTransactionId(null);
       }
     }
+  };
+
+  const handleExportTransactions = () => {
+    if (filteredTransactions.length === 0) {
+      alert("No transactions to export");
+      return;
+    }
+
+    // Create CSV content
+    const headers = ["Date", "Description", "Category", "Type", "Amount"];
+    const csvContent = [
+      headers.join(","),
+      ...filteredTransactions.map((transaction) =>
+        [
+          formatDate(transaction.date),
+          `"${transaction.description}"`,
+          `"${transaction.category}"`,
+          transaction.type,
+          transaction.amount,
+        ].join(",")
+      ),
+    ].join("\n");
+
+    // Create and download file
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `transactions_${new Date().toISOString().split("T")[0]}.csv`
+    );
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportJSON = () => {
+    if (filteredTransactions.length === 0) {
+      alert("No transactions to export");
+      return;
+    }
+
+    // Create JSON content
+    const jsonContent = JSON.stringify(filteredTransactions, null, 2);
+    const blob = new Blob([jsonContent], {
+      type: "application/json;charset=utf-8;",
+    });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `transactions_${new Date().toISOString().split("T")[0]}.json`
+    );
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   if (loading) {
@@ -85,7 +181,9 @@ export default function TransactionsPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Transactions</h1>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Transactions
+                </h1>
                 <p className="text-gray-600">
                   View and manage all your transactions
                 </p>
@@ -138,10 +236,56 @@ export default function TransactionsPage() {
               </select>
 
               {/* Export Button */}
-              <button className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-                <Download className="w-4 h-4" />
-                Export
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setShowExportDropdown(!showExportDropdown)}
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors w-full"
+                >
+                  <Download className="w-4 h-4" />
+                  Export
+                </button>
+
+                {showExportDropdown && (
+                  <div
+                    className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-10"
+                    ref={exportDropdownRef}
+                  >
+                    <button
+                      onClick={() => {
+                        handleExportTransactions();
+                        setShowExportDropdown(false);
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 border-b border-gray-100"
+                    >
+                      Export as CSV
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleExportJSON();
+                        setShowExportDropdown(false);
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      Export as JSON
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Clear Filters Button */}
+              {(searchTerm || filterType !== "all" || filterCategory) && (
+                <button
+                  onClick={() => {
+                    setSearchTerm("");
+                    setFilterType("all");
+                    setFilterCategory("");
+                  }}
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                >
+                  <Filter className="w-4 h-4" />
+                  Clear Filters
+                </button>
+              )}
             </div>
           </div>
 
@@ -229,9 +373,16 @@ export default function TransactionsPage() {
                             onClick={() =>
                               handleDeleteTransaction(transaction.id)
                             }
-                            className="text-red-600 hover:text-red-900 text-sm font-medium"
+                            disabled={deletingTransactionId === transaction.id}
+                            className={`text-sm font-medium transition-colors ${
+                              deletingTransactionId === transaction.id
+                                ? "text-gray-400 cursor-not-allowed"
+                                : "text-red-600 hover:text-red-900"
+                            }`}
                           >
-                            Delete
+                            {deletingTransactionId === transaction.id
+                              ? "Deleting..."
+                              : "Delete"}
                           </button>
                         </td>
                       </tr>
