@@ -1,45 +1,59 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Trash2, Save } from "lucide-react";
-import { Category } from "@/types";
+import { Plus, Trash2, Save, Download } from "lucide-react";
+import { Category, Transaction } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
-import { getCategories, addCategory, deleteCategory } from "@/lib/firebaseServices";
+import {
+  getCategories,
+  addCategory,
+  deleteCategory,
+  getTransactions,
+  deleteTransaction,
+} from "@/lib/firebaseServices";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { exportTransactionsAsJSON } from "@/utils";
 
 export default function SettingsPage() {
   const { currentUser } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
+  const [clearing, setClearing] = useState(false);
   const [newCategory, setNewCategory] = useState({
     name: "",
     type: "expense" as "income" | "expense",
     color: "#6b7280",
   });
 
-  // Load categories from Firebase
+  // Load data from Firebase
   useEffect(() => {
     if (!currentUser) return;
 
-    const loadCategories = async () => {
+    const loadData = async () => {
       try {
         setLoading(true);
-        const categoriesData = await getCategories(currentUser.uid);
+        const [categoriesData, transactionsData] = await Promise.all([
+          getCategories(currentUser.uid),
+          getTransactions(currentUser.uid),
+        ]);
         setCategories(categoriesData);
+        setTransactions(transactionsData);
       } catch (error) {
-        console.error("Error loading categories:", error);
+        console.error("Error loading data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    loadCategories();
+    loadData();
   }, [currentUser]);
 
   // Helper function to check if a category is a default category
   const isDefaultCategory = (category: Category) => {
     // Default categories don't have a userId field
-    return !category.hasOwnProperty('userId');
+    return !category.hasOwnProperty("userId");
   };
 
   const handleAddCategory = async () => {
@@ -56,7 +70,7 @@ export default function SettingsPage() {
       };
 
       const newCategoryDoc = await addCategory(categoryData, currentUser.uid);
-      setCategories(prev => [...prev, newCategoryDoc]);
+      setCategories((prev) => [...prev, newCategoryDoc]);
 
       setNewCategory({
         name: "",
@@ -70,12 +84,14 @@ export default function SettingsPage() {
   };
 
   const handleDeleteCategory = async (id: string) => {
-    const category = categories.find(cat => cat.id === id);
+    const category = categories.find((cat) => cat.id === id);
     if (!category) return;
 
     // Don't allow deletion of default categories
     if (isDefaultCategory(category)) {
-      alert("Default categories cannot be deleted. You can only delete your custom categories.");
+      alert(
+        "Default categories cannot be deleted. You can only delete your custom categories."
+      );
       return;
     }
 
@@ -86,10 +102,79 @@ export default function SettingsPage() {
     ) {
       try {
         await deleteCategory(id);
-        setCategories(prev => prev.filter(cat => cat.id !== id));
+        setCategories((prev) => prev.filter((cat) => cat.id !== id));
       } catch (error) {
         console.error("Error deleting category:", error);
         alert("Failed to delete category");
+      }
+    }
+  };
+
+  const handleExportData = async () => {
+    if (!currentUser) return;
+
+    try {
+      setExporting(true);
+
+      // Get fresh transactions data from Firebase
+      const transactionsData = await getTransactions(currentUser.uid);
+
+      // Use shared export function
+      exportTransactionsAsJSON(
+        transactionsData,
+        currentUser.email || undefined
+      );
+
+      alert("Transactions exported successfully!");
+    } catch (error) {
+      console.error("Error exporting data:", error);
+      alert("Failed to export transactions");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleClearAllData = async () => {
+    if (!currentUser) return;
+
+    const confirmMessage = `Are you sure you want to delete ALL your data? This will permanently delete:
+    
+• ${transactions.length} transactions
+• ${
+      categories.filter((cat) => !isDefaultCategory(cat)).length
+    } custom categories
+
+This action cannot be undone.`;
+
+    if (confirm(confirmMessage)) {
+      try {
+        setClearing(true);
+
+        // Delete all user transactions
+        const deleteTransactionPromises = transactions.map((transaction) =>
+          deleteTransaction(transaction.id)
+        );
+        await Promise.all(deleteTransactionPromises);
+
+        // Delete all user categories (not default ones)
+        const userCategories = categories.filter(
+          (cat) => !isDefaultCategory(cat)
+        );
+        const deleteCategoryPromises = userCategories.map((category) =>
+          deleteCategory(category.id)
+        );
+        await Promise.all(deleteCategoryPromises);
+
+        // Clear local state
+        setTransactions([]);
+        setCategories(categories.filter((cat) => isDefaultCategory(cat)));
+
+        alert("All data has been cleared successfully!");
+      } catch (error) {
+        console.error("Error clearing data:", error);
+        alert("Failed to clear data. Please try again.");
+      } finally {
+        setClearing(false);
       }
     }
   };
@@ -127,7 +212,9 @@ export default function SettingsPage() {
           {/* Categories Management */}
           <div className="bg-white rounded-lg shadow mb-8">
             <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Categories</h2>
+              <h2 className="text-lg font-semibold text-gray-900">
+                Categories
+              </h2>
               <p className="text-sm text-gray-600">
                 Manage your income and expense categories
               </p>
@@ -190,9 +277,9 @@ export default function SettingsPage() {
                         <div
                           key={category.id}
                           className={`flex items-center justify-between p-4 border rounded-lg ${
-                            isDefault 
-                              ? 'border-gray-200 bg-gray-50' 
-                              : 'border-gray-200 bg-white'
+                            isDefault
+                              ? "border-gray-200 bg-gray-50"
+                              : "border-gray-200 bg-white"
                           }`}
                         >
                           <div className="flex items-center">
@@ -236,9 +323,9 @@ export default function SettingsPage() {
                         <div
                           key={category.id}
                           className={`flex items-center justify-between p-4 border rounded-lg ${
-                            isDefault 
-                              ? 'border-gray-200 bg-gray-50' 
-                              : 'border-gray-200 bg-white'
+                            isDefault
+                              ? "border-gray-200 bg-gray-50"
+                              : "border-gray-200 bg-white"
                           }`}
                         >
                           <div className="flex items-center">
@@ -292,8 +379,36 @@ export default function SettingsPage() {
                     Download your transactions as JSON
                   </p>
                 </div>
-                <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-                  Export
+                <button
+                  onClick={handleExportData}
+                  disabled={exporting}
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {exporting ? (
+                    <svg
+                      className="animate-spin h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  {exporting ? "Exporting..." : "Export"}
                 </button>
               </div>
 
@@ -305,19 +420,34 @@ export default function SettingsPage() {
                   </p>
                 </div>
                 <button
-                  onClick={() => {
-                    if (
-                      confirm(
-                        "Are you sure you want to clear all data? This action cannot be undone."
-                      )
-                    ) {
-                      // Note: This would need to be implemented with Firebase delete operations
-                      alert("Clear data functionality needs to be implemented with Firebase");
-                    }
-                  }}
-                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                  onClick={handleClearAllData}
+                  disabled={clearing}
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Clear Data
+                  {clearing ? (
+                    <svg
+                      className="animate-spin h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    "Clear Data"
+                  )}
                 </button>
               </div>
             </div>
