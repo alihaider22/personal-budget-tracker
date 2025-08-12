@@ -98,8 +98,8 @@ export default function Dashboard() {
       totalIncome,
       totalExpenses,
       netIncome,
-      monthlyBudget: 5000, // Default monthly budget
-      remainingBudget: 5000 - totalExpenses,
+      monthlyBudget: 300, // Default monthly budget
+      remainingBudget: 300 - totalExpenses,
     });
   }, [transactions, selectedMonth]);
 
