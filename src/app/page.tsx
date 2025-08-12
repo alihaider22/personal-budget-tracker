@@ -26,7 +26,7 @@ import {
 } from "@/lib/firebaseServices";
 
 export default function Dashboard() {
-  const { currentUser } = useAuth();
+  const { currentUser, loading: authLoading } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
@@ -42,7 +42,14 @@ export default function Dashboard() {
 
   // Load data from Firebase when user is authenticated
   useEffect(() => {
-    if (!currentUser) return;
+    // Don't load data if still checking authentication
+    if (authLoading) return;
+    
+    // If no user is authenticated, don't try to load data
+    if (!currentUser) {
+      setLoading(false);
+      return;
+    }
 
     const loadData = async () => {
       try {
@@ -62,7 +69,7 @@ export default function Dashboard() {
     };
 
     loadData();
-  }, [currentUser]);
+  }, [currentUser, authLoading]);
 
   // Remove localStorage save effect - data is now saved to Firebase
 
@@ -120,6 +127,19 @@ export default function Dashboard() {
     }
   };
 
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading while loading data
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">

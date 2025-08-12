@@ -15,7 +15,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { exportTransactionsAsJSON } from "@/utils";
 
 export default function SettingsPage() {
-  const { currentUser } = useAuth();
+  const { currentUser, loading: authLoading } = useAuth();
   const [categories, setCategories] = useState<Category[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +29,14 @@ export default function SettingsPage() {
 
   // Load data from Firebase
   useEffect(() => {
-    if (!currentUser) return;
+    // Don't load data if still checking authentication
+    if (authLoading) return;
+    
+    // If no user is authenticated, don't try to load data
+    if (!currentUser) {
+      setLoading(false);
+      return;
+    }
 
     const loadData = async () => {
       try {
@@ -48,7 +55,7 @@ export default function SettingsPage() {
     };
 
     loadData();
-  }, [currentUser]);
+  }, [currentUser, authLoading]);
 
   // Helper function to check if a category is a default category
   const isDefaultCategory = (category: Category) => {
@@ -179,6 +186,19 @@ This action cannot be undone.`;
     }
   };
 
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading while loading data
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
