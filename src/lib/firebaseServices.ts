@@ -71,18 +71,31 @@ export const addCategory = async (
 };
 
 export const getCategories = async (userId: string) => {
-  const q = query(
+  // Get user-specific categories
+  const userQuery = query(
     collection(db, "categories"),
     where("userId", "==", userId)
   );
-  const querySnapshot = await getDocs(q);
-  const categories = querySnapshot.docs.map((doc) => ({
+  const userSnapshot = await getDocs(userQuery);
+  const userCategories = userSnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   })) as Category[];
-  
-  // Sort by name ascending in JavaScript
-  return categories.sort((a, b) => a.name.localeCompare(b.name));
+
+  // Get default categories (no userId filter)
+  const defaultQuery = query(
+    collection(db, "defaultCategories"),
+    orderBy("name")
+  );
+  const defaultSnapshot = await getDocs(defaultQuery);
+  const defaultCategories = defaultSnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as Category[];
+
+  // Combine and sort all categories
+  const allCategories = [...userCategories, ...defaultCategories];
+  return allCategories.sort((a, b) => a.name.localeCompare(b.name));
 };
 
 export const updateCategory = async (
