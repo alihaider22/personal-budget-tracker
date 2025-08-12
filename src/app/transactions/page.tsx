@@ -3,7 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, Filter, Download } from "lucide-react";
 import { Transaction, Category } from "@/types";
-import { formatCurrency, formatDate } from "@/utils";
+import {
+  formatCurrency,
+  formatDate,
+  exportTransactionsAsCSV,
+  exportTransactionsAsJSON,
+} from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   getTransactions,
@@ -103,63 +108,14 @@ export default function TransactionsPage() {
   };
 
   const handleExportTransactions = () => {
-    if (filteredTransactions.length === 0) {
-      alert("No transactions to export");
-      return;
-    }
-
-    // Create CSV content
-    const headers = ["Date", "Description", "Category", "Type", "Amount"];
-    const csvContent = [
-      headers.join(","),
-      ...filteredTransactions.map((transaction) =>
-        [
-          formatDate(transaction.date),
-          `"${transaction.description}"`,
-          `"${transaction.category}"`,
-          transaction.type,
-          transaction.amount,
-        ].join(",")
-      ),
-    ].join("\n");
-
-    // Create and download file
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `transactions_${new Date().toISOString().split("T")[0]}.csv`
-    );
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    exportTransactionsAsCSV(filteredTransactions);
   };
 
   const handleExportJSON = () => {
-    if (filteredTransactions.length === 0) {
-      alert("No transactions to export");
-      return;
-    }
-
-    // Create JSON content
-    const jsonContent = JSON.stringify(filteredTransactions, null, 2);
-    const blob = new Blob([jsonContent], {
-      type: "application/json;charset=utf-8;",
-    });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `transactions_${new Date().toISOString().split("T")[0]}.json`
+    exportTransactionsAsJSON(
+      filteredTransactions,
+      currentUser?.email || undefined
     );
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
   };
 
   if (loading) {
