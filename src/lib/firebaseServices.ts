@@ -29,17 +29,19 @@ export const addTransaction = async (
 export const getTransactions = async (userId: string) => {
   const q = query(
     collection(db, "transactions"),
-    where("userId", "==", userId),
-    orderBy("date", "desc")
+    where("userId", "==", userId)
   );
   const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map((doc) => ({
+  const transactions = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
     date: doc.data().date,
     createdAt:
       doc.data().createdAt?.toDate?.()?.toISOString() || doc.data().createdAt,
   })) as Transaction[];
+  
+  // Sort by date descending in JavaScript
+  return transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 };
 
 export const updateTransaction = async (
@@ -71,14 +73,16 @@ export const addCategory = async (
 export const getCategories = async (userId: string) => {
   const q = query(
     collection(db, "categories"),
-    where("userId", "==", userId),
-    orderBy("name")
+    where("userId", "==", userId)
   );
   const querySnapshot = await getDocs(q);
-  return querySnapshot.docs.map((doc) => ({
+  const categories = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   })) as Category[];
+  
+  // Sort by name ascending in JavaScript
+  return categories.sort((a, b) => a.name.localeCompare(b.name));
 };
 
 export const updateCategory = async (
