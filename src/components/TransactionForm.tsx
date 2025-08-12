@@ -148,6 +148,14 @@ export default function TransactionForm({
                 </option>
               ))}
             </select>
+            {filteredCategories.length === 0 && (
+              <p className="mt-1 text-sm text-gray-500">
+                No {formData.type} categories found.{" "}
+                <a href="/settings" className="text-blue-600 hover:text-blue-800 underline">
+                  Add categories in Settings
+                </a>
+              </p>
+            )}
           </div>
 
           <div>
