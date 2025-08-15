@@ -44,7 +44,7 @@ export default function Dashboard() {
   useEffect(() => {
     // Don't load data if still checking authentication
     if (authLoading) return;
-    
+
     // If no user is authenticated, don't try to load data
     if (!currentUser) {
       setLoading(false);
@@ -130,10 +130,12 @@ export default function Dashboard() {
   // Show loading while checking authentication
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Checking authentication...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">
+            Checking authentication...
+          </p>
         </div>
       </div>
     );
@@ -142,10 +144,12 @@ export default function Dashboard() {
   // Show loading while loading data
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading your data...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">
+            Loading your data...
+          </p>
         </div>
       </div>
     );
@@ -153,16 +157,18 @@ export default function Dashboard() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Header */}
-        <header className="bg-white shadow-sm border-b">
+        <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                   Budget Tracker
                 </h1>
-                <p className="text-gray-600">Manage your finances with ease</p>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Manage your finances with ease
+                </p>
               </div>
               <button
                 onClick={handleAddTransaction}
@@ -179,50 +185,52 @@ export default function Dashboard() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <TrendingUp className="w-6 h-6 text-green-600" />
+                <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
+                  <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     Total Income
                   </p>
-                  <p className="text-2xl font-bold text-green-600">
+                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                     {formatCurrency(stats.totalIncome)}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center">
-                <div className="p-2 bg-red-100 rounded-lg">
-                  <TrendingDown className="w-6 h-6 text-red-600" />
+                <div className="p-2 bg-red-100 dark:bg-red-900/20 rounded-lg">
+                  <TrendingDown className="w-6 h-6 text-red-600 dark:text-red-400" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     Total Expenses
                   </p>
-                  <p className="text-2xl font-bold text-red-600">
+                  <p className="text-2xl font-bold text-red-600 dark:text-red-400">
                     {formatCurrency(stats.totalExpenses)}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <DollarSign className="w-6 h-6 text-blue-600" />
+                <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+                  <DollarSign className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     Net Income
                   </p>
                   <p
                     className={`text-2xl font-bold ${
-                      stats.netIncome >= 0 ? "text-blue-600" : "text-red-600"
+                      stats.netIncome >= 0
+                        ? "text-blue-600 dark:text-blue-400"
+                        : "text-red-600 dark:text-red-400"
                     }`}
                   >
                     {formatCurrency(stats.netIncome)}
@@ -231,20 +239,20 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
               <div className="flex items-center">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <CreditCard className="w-6 h-6 text-purple-600" />
+                <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
+                  <CreditCard className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">
+                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
                     Remaining Budget
                   </p>
                   <p
                     className={`text-2xl font-bold ${
                       stats.remainingBudget >= 0
-                        ? "text-purple-600"
-                        : "text-red-600"
+                        ? "text-purple-600 dark:text-purple-400"
+                        : "text-red-600 dark:text-red-400"
                     }`}
                   >
                     {formatCurrency(stats.remainingBudget)}
@@ -255,16 +263,16 @@ export default function Dashboard() {
           </div>
 
           {/* Recent Transactions */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Recent Transactions
               </h2>
             </div>
-            <div className="divide-y divide-gray-200">
+            <div className="divide-y divide-gray-200 dark:divide-gray-700">
               {transactions.length === 0 ? (
                 <div className="px-6 py-8 text-center">
-                  <p className="text-gray-500">
+                  <p className="text-gray-500 dark:text-gray-400">
                     No transactions yet. Add your first transaction to get
                     started!
                   </p>
@@ -281,10 +289,10 @@ export default function Dashboard() {
                         style={{ backgroundColor: "#6b7280" }}
                       ></div>
                       <div>
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium text-gray-900 dark:text-white">
                           {transaction.description}
                         </p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                           {formatDate(transaction.date)}
                         </p>
                       </div>
@@ -293,14 +301,14 @@ export default function Dashboard() {
                       <p
                         className={`font-semibold ${
                           transaction.type === "income"
-                            ? "text-green-600"
-                            : "text-red-600"
+                            ? "text-green-600 dark:text-green-400"
+                            : "text-red-600 dark:text-red-400"
                         }`}
                       >
                         {transaction.type === "income" ? "+" : "-"}
                         {formatCurrency(transaction.amount)}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
                         {transaction.category}
                       </p>
                     </div>

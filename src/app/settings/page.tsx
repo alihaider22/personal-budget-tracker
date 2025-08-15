@@ -31,7 +31,7 @@ export default function SettingsPage() {
   useEffect(() => {
     // Don't load data if still checking authentication
     if (authLoading) return;
-    
+
     // If no user is authenticated, don't try to load data
     if (!currentUser) {
       setLoading(false);
@@ -189,10 +189,12 @@ This action cannot be undone.`;
   // Show loading while checking authentication
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Checking authentication...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">
+            Checking authentication...
+          </p>
         </div>
       </div>
     );
@@ -201,10 +203,12 @@ This action cannot be undone.`;
   // Show loading while loading data
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading categories...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">
+            Loading categories...
+          </p>
         </div>
       </div>
     );
@@ -212,14 +216,16 @@ This action cannot be undone.`;
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Header */}
-        <header className="bg-white shadow-sm border-b">
+        <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-                <p className="text-gray-600">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Settings
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400">
                   Manage your budget tracker preferences
                 </p>
               </div>
@@ -230,12 +236,12 @@ This action cannot be undone.`;
         {/* Main Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Categories Management */}
-          <div className="bg-white rounded-lg shadow mb-8">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow mb-8 border border-gray-200 dark:border-gray-700">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Categories
               </h2>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 Manage your income and expense categories
               </p>
             </div>
@@ -250,7 +256,7 @@ This action cannot be undone.`;
                   onChange={(e) =>
                     setNewCategory({ ...newCategory, name: e.target.value })
                   }
-                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-400"
+                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                 />
 
                 <select
@@ -261,7 +267,7 @@ This action cannot be undone.`;
                       type: e.target.value as "income" | "expense",
                     })
                   }
-                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                  className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="expense">Expense</option>
                   <option value="income">Income</option>
@@ -273,7 +279,7 @@ This action cannot be undone.`;
                   onChange={(e) =>
                     setNewCategory({ ...newCategory, color: e.target.value })
                   }
-                  className="w-full h-10 border border-gray-300 rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full h-10 border border-gray-300 dark:border-gray-600 rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
 
                 <button
@@ -287,7 +293,9 @@ This action cannot be undone.`;
 
               {/* Categories List */}
               <div className="space-y-4">
-                <h3 className="font-medium text-gray-900">Income Categories</h3>
+                <h3 className="font-medium text-gray-900 dark:text-white">
+                  Income Categories
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {categories
                     .filter((cat) => cat.type === "income")
@@ -298,8 +306,8 @@ This action cannot be undone.`;
                           key={category.id}
                           className={`flex items-center justify-between p-4 border rounded-lg ${
                             isDefault
-                              ? "border-gray-200 bg-gray-50"
-                              : "border-gray-200 bg-white"
+                              ? "border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700"
+                              : "border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800"
                           }`}
                         >
                           <div className="flex items-center">
@@ -308,11 +316,11 @@ This action cannot be undone.`;
                               style={{ backgroundColor: category.color }}
                             ></div>
                             <div>
-                              <span className="font-medium text-gray-900">
+                              <span className="font-medium text-gray-900 dark:text-white">
                                 {category.name}
                               </span>
                               {isDefault && (
-                                <span className="ml-2 text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded">
+                                <span className="ml-2 text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded">
                                   Default
                                 </span>
                               )}
@@ -321,7 +329,7 @@ This action cannot be undone.`;
                           {!isDefault && (
                             <button
                               onClick={() => handleDeleteCategory(category.id)}
-                              className="text-red-600 hover:text-red-900"
+                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -331,7 +339,7 @@ This action cannot be undone.`;
                     })}
                 </div>
 
-                <h3 className="font-medium text-gray-900 mt-6">
+                <h3 className="font-medium text-gray-900 dark:text-white mt-6">
                   Expense Categories
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -344,8 +352,8 @@ This action cannot be undone.`;
                           key={category.id}
                           className={`flex items-center justify-between p-4 border rounded-lg ${
                             isDefault
-                              ? "border-gray-200 bg-gray-50"
-                              : "border-gray-200 bg-white"
+                              ? "border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700"
+                              : "border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800"
                           }`}
                         >
                           <div className="flex items-center">
@@ -354,11 +362,11 @@ This action cannot be undone.`;
                               style={{ backgroundColor: category.color }}
                             ></div>
                             <div>
-                              <span className="font-medium text-gray-900">
+                              <span className="font-medium text-gray-900 dark:text-white">
                                 {category.name}
                               </span>
                               {isDefault && (
-                                <span className="ml-2 text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded">
+                                <span className="ml-2 text-xs text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded">
                                   Default
                                 </span>
                               )}
@@ -367,7 +375,7 @@ This action cannot be undone.`;
                           {!isDefault && (
                             <button
                               onClick={() => handleDeleteCategory(category.id)}
-                              className="text-red-600 hover:text-red-900"
+                              className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -381,21 +389,23 @@ This action cannot be undone.`;
           </div>
 
           {/* Data Management */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Data Management
               </h2>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 Manage your data and preferences
               </p>
             </div>
 
             <div className="p-6 space-y-4">
-              <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+              <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
                 <div>
-                  <h3 className="font-medium text-gray-900">Export Data</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-medium text-gray-900 dark:text-white">
+                    Export Data
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Download your transactions as JSON
                   </p>
                 </div>
@@ -432,10 +442,12 @@ This action cannot be undone.`;
                 </button>
               </div>
 
-              <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+              <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-600 rounded-lg">
                 <div>
-                  <h3 className="font-medium text-gray-900">Clear All Data</h3>
-                  <p className="text-sm text-gray-600">
+                  <h3 className="font-medium text-gray-900 dark:text-white">
+                    Clear All Data
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     Delete all transactions and start fresh
                   </p>
                 </div>
