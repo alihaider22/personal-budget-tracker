@@ -130,10 +130,10 @@ export default function Dashboard() {
   // Show loading while checking authentication
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">
+          <p className="mt-4 text-muted-foreground">
             Checking authentication...
           </p>
         </div>
@@ -144,10 +144,10 @@ export default function Dashboard() {
   // Show loading while loading data
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">
+          <p className="mt-4 text-muted-foreground">
             Loading your data...
           </p>
         </div>
@@ -157,16 +157,16 @@ export default function Dashboard() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-background">
         {/* Header */}
-        <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <header className="shadow-sm border-b bg-card border-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center py-6">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-2xl font-bold text-foreground">
                   Budget Tracker
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-muted-foreground">
                   Manage your finances with ease
                 </p>
               </div>
@@ -185,13 +185,13 @@ export default function Dashboard() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+            <div className="rounded-lg shadow p-6 border bg-card border-border">
               <div className="flex items-center">
                 <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-lg">
                   <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  <p className="text-sm font-medium text-muted-foreground">
                     Total Income
                   </p>
                   <p className="text-2xl font-bold text-green-600 dark:text-green-400">
@@ -201,13 +201,13 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+            <div className="rounded-lg shadow p-6 border bg-card border-border">
               <div className="flex items-center">
                 <div className="p-2 bg-red-100 dark:bg-red-900/20 rounded-lg">
                   <TrendingDown className="w-6 h-6 text-red-600 dark:text-red-400" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  <p className="text-sm font-medium text-muted-foreground">
                     Total Expenses
                   </p>
                   <p className="text-2xl font-bold text-red-600 dark:text-red-400">
@@ -217,13 +217,13 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+            <div className="rounded-lg shadow p-6 border bg-card border-border">
               <div className="flex items-center">
                 <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
                   <DollarSign className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  <p className="text-sm font-medium text-muted-foreground">
                     Net Income
                   </p>
                   <p
@@ -239,13 +239,13 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
+            <div className="rounded-lg shadow p-6 border bg-card border-border">
               <div className="flex items-center">
                 <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
                   <CreditCard className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                  <p className="text-sm font-medium text-muted-foreground">
                     Remaining Budget
                   </p>
                   <p
@@ -263,16 +263,16 @@ export default function Dashboard() {
           </div>
 
           {/* Recent Transactions */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <div className="rounded-lg shadow border bg-card border-border">
+            <div className="px-6 py-4 border-b border-border">
+              <h2 className="text-lg font-semibold text-foreground">
                 Recent Transactions
               </h2>
             </div>
-            <div className="divide-y divide-gray-200 dark:divide-gray-700">
+            <div className="divide-y divide-border">
               {transactions.length === 0 ? (
                 <div className="px-6 py-8 text-center">
-                  <p className="text-gray-500 dark:text-gray-400">
+                  <p className="text-muted-foreground">
                     No transactions yet. Add your first transaction to get
                     started!
                   </p>
@@ -285,14 +285,14 @@ export default function Dashboard() {
                   >
                     <div className="flex items-center">
                       <div
-                        className={`w-3 h-3 rounded-full mr-3`}
+                        className="w-3 h-3 rounded-full mr-3"
                         style={{ backgroundColor: "#6b7280" }}
                       ></div>
                       <div>
-                        <p className="font-medium text-gray-900 dark:text-white">
+                        <p className="font-medium text-foreground">
                           {transaction.description}
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-sm text-muted-foreground">
                           {formatDate(transaction.date)}
                         </p>
                       </div>
@@ -308,7 +308,7 @@ export default function Dashboard() {
                         {transaction.type === "income" ? "+" : "-"}
                         {formatCurrency(transaction.amount)}
                       </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-muted-foreground">
                         {transaction.category}
                       </p>
                     </div>
