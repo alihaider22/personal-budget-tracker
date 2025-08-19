@@ -62,7 +62,7 @@ export default function Navigation() {
                     className={`flex items-center px-1 py-4 text-sm font-medium border-b-2 transition-colors ${
                       isActive
                         ? "border-blue-500 text-blue-600 dark:text-blue-400"
-                        : "border-transparent text-muted-foreground hover:border-gray-300 dark:hover:border-gray-600"
+                        : "border-transparent text-muted-foreground hover:text-foreground hover:border-gray-300 dark:hover:border-gray-600"
                     }`}
                   >
                     <Icon className="w-4 h-4 mr-2" />
@@ -76,7 +76,7 @@ export default function Navigation() {
             <div className="md:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted"
                 aria-label="Toggle mobile menu"
               >
                 {isMobileMenuOpen ? (
@@ -101,7 +101,7 @@ export default function Navigation() {
                   </div>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-800"
+                    className="flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted"
                   >
                     <LogOut className="w-4 h-4 mr-2" />
                     <span className="hidden sm:inline">Logout</span>
@@ -132,7 +132,7 @@ export default function Navigation() {
                 </h2>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="p-2 transition-colors text-muted-foreground"
+                  className="p-2 transition-colors text-muted-foreground hover:text-foreground hover:bg-muted rounded-md"
                   aria-label="Close menu"
                 >
                   <X className="w-6 h-6" />
@@ -152,7 +152,7 @@ export default function Navigation() {
                       className={`flex items-center px-4 py-3 text-base font-medium rounded-lg transition-colors ${
                         isActive
                           ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-l-4 border-blue-500"
-                          : "text-muted-foreground hover:bg-gray-50 dark:hover:bg-gray-800"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
                       }`}
                     >
                       <Icon className="w-5 h-5 mr-3" />
@@ -185,7 +185,7 @@ export default function Navigation() {
                   </div>
                   <button
                     onClick={handleLogout}
-                    className="flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors text-muted-foreground hover:text-foreground hover:bg-background"
                   >
                     <LogOut className="w-4 h-4 mr-3" />
                     Logout

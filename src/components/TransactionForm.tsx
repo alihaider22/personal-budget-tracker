@@ -69,7 +69,7 @@ export default function TransactionForm({
           </h2>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground hover:bg-muted p-1 rounded-md transition-colors"
           >
             <X className="w-5 h-5" />
           </button>

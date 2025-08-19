@@ -56,7 +56,7 @@ export default function ThemeToggle() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-800"
+        className="flex items-center space-x-2 px-3 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:text-foreground hover:bg-muted"
         aria-label="Toggle theme"
       >
         {getThemeIcon()}
@@ -76,7 +76,7 @@ export default function ThemeToggle() {
               className={`flex items-center w-full px-4 py-2 text-sm transition-colors ${
                 theme === "light"
                   ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-                  : "text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-700"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
               <Sun className="w-4 h-4 mr-3" />
@@ -87,7 +87,7 @@ export default function ThemeToggle() {
               className={`flex items-center w-full px-4 py-2 text-sm transition-colors ${
                 theme === "dark"
                   ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-                  : "text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-700"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
               <Moon className="w-4 h-4 mr-3" />
@@ -98,7 +98,7 @@ export default function ThemeToggle() {
               className={`flex items-center w-full px-4 py-2 text-sm transition-colors ${
                 theme === "system"
                   ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-                  : "text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-700"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
               <Monitor className="w-4 h-4 mr-3" />
