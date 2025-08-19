@@ -56,7 +56,7 @@ export default function ThemeToggle() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors"
+        className="flex items-center space-x-2 px-3 py-2 text-sm font-medium rounded-md transition-colors text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-800"
         aria-label="Toggle theme"
       >
         {getThemeIcon()}
@@ -69,14 +69,14 @@ export default function ThemeToggle() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+        <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg border z-50 bg-card border-border">
           <div className="py-1">
             <button
               onClick={() => handleThemeChange("light")}
               className={`flex items-center w-full px-4 py-2 text-sm transition-colors ${
                 theme === "light"
                   ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  : "text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               <Sun className="w-4 h-4 mr-3" />
@@ -87,7 +87,7 @@ export default function ThemeToggle() {
               className={`flex items-center w-full px-4 py-2 text-sm transition-colors ${
                 theme === "dark"
                   ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  : "text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               <Moon className="w-4 h-4 mr-3" />
@@ -98,7 +98,7 @@ export default function ThemeToggle() {
               className={`flex items-center w-full px-4 py-2 text-sm transition-colors ${
                 theme === "system"
                   ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  : "text-muted-foreground hover:bg-gray-100 dark:hover:bg-gray-700"
               }`}
             >
               <Monitor className="w-4 h-4 mr-3" />
