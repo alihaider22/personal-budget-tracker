@@ -52,7 +52,7 @@ export default function SignupForm({ onToggleMode }: SignupFormProps) {
 
     try {
       await signInWithGoogle();
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errorMessage =
         error instanceof FirebaseError
           ? error.message
