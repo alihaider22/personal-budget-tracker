@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { FirebaseError } from "firebase/app";
 
 interface LoginFormProps {
   onToggleMode: () => void;
@@ -21,8 +22,10 @@ export default function LoginForm({ onToggleMode }: LoginFormProps) {
 
     try {
       await signIn(email, password);
-    } catch (error: any) {
-      setError(error.message || "Failed to sign in");
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof FirebaseError ? error.message : "Failed to sign in";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -34,8 +37,12 @@ export default function LoginForm({ onToggleMode }: LoginFormProps) {
 
     try {
       await signInWithGoogle();
-    } catch (error: any) {
-      setError(error.message || "Failed to sign in with Google");
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof FirebaseError
+          ? error.message
+          : "Failed to sign in with Google";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

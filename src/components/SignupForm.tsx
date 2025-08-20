@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { FirebaseError } from "firebase/app";
 
 interface SignupFormProps {
   onToggleMode: () => void;
@@ -34,8 +35,12 @@ export default function SignupForm({ onToggleMode }: SignupFormProps) {
 
     try {
       await signUp(email, password);
-    } catch (error: any) {
-      setError(error.message || "Failed to create account");
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof FirebaseError
+          ? error.message
+          : "Failed to create account";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
